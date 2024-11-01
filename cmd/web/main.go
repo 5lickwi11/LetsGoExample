@@ -7,11 +7,14 @@ import (
     "net/http"
     "os"
 
+    "LetsGoExample/internal/models"
+
     _ "github.com/go-sql-driver/mysql"
 )
 
 type application struct {
 	logger *slog.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -23,14 +26,15 @@ func main() {
 
     db, err := openDB(*dsn)
     if err != nil {
-    logger.Error(err.Error())
-    os.Exit(1)
+    	logger.Error(err.Error())
+     	os.Exit(1)
     }
 
     defer db.Close()
 
     app := &application{
     	logger: logger,
+     	snippets: &models.SnippetModel{DB:db}
     }
 
     // the old way of printing to terminal: log.Printf("starting server on %s", *addr)
